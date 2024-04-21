@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK Income Tax Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #container {
+            margin: 50px auto;
+            width: 400px;
+            text-align: center;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        #taxed-amount {
+            margin-top: 20px;
+            display: none;
+        }
+        #taxed-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #f00;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h2>UK Income Tax Calculator</h2>
+        <input type="number" id="income" placeholder="Enter yearly income">
+        <button onclick="calculateTax()">Calculate</button>
+        <div id="result"></div>
+        <div id="taxed-amount">
+            <div id="taxed-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateTax() {
+            var income = parseFloat(document.getElementById("income").value);
+
+            // Tax brackets and rates for the UK tax year 2023-2024
+            var taxBrackets = [
+                { min: 0, max: 12500, rate: 0 },
+                { min: 12501, max: 50000, rate: 0.20 },
+                { min: 50001, max: 150000, rate: 0.40 },
+                { min: 150001, max: Infinity, rate: 0.45 }
+            ];
+
+            var tax = 0;
+            var remainingIncome = income;
+
+            // Calculate tax
+            for (var i = 0; i < taxBrackets.length; i++) {
+                var bracket = taxBrackets[i];
+                if (remainingIncome <= 0) {
+                    break;
+                }
+                var taxableAmount = Math.min(remainingIncome, bracket.max - bracket.min);
+                tax += taxableAmount * bracket.rate;
+                remainingIncome -= taxableAmount;
+            }
+
+            var netIncome = income - tax;
+
+            // Display results
+            document.getElementById("result").innerHTML = "Net Income: £" + netIncome.toFixed(2);
+            document.getElementById("taxed-amount").style.display = "block";
+            document.getElementById("taxed-bar").style.width = (tax / income * 100) + "%";
+        }
+    </script>
+</body>
+</html>
